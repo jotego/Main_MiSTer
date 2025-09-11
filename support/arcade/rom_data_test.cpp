@@ -81,13 +81,14 @@ void test_map(int map, const char *expected ) {
 int main() {
 	int map=0x0201;
 	test_map(0x0001,"00001000");
-	test_map(0x0021,"01002300");
 	test_map(0x4321,"01234567");
 	test_map(0x0012,"10003200");
 	test_map(0x1234,"32107654");
 	test_map(0x1200,"00100032");
 	test_map(0x2100,"00010023");
+	test_map(0x0021,"01002300");
 	test_map(0x0201,"00102030");
+	test_map(0x2001,"00012003");
 	// These will fail because the sequence cannot skip bytes
 	// test_map(0x0034,"32007600");
 	// test_map(0x0043,"23006700");
