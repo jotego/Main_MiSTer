@@ -4,7 +4,7 @@
 
 using namespace std;
 
-const int unitlen=4;
+int unitlen=4;
 uint8_t romdata[8]={0,0,0,0, 0,0,0,0};
 int romlen[8]={0,0,0,0, 0,0,0,0};
 
@@ -70,8 +70,12 @@ void test_map(int map, const char *expected ) {
 		romdata[i]=0;
 		romlen[i]=0;
 	}
-	rom_data(buf,   4, map);
-	rom_data(buf+4, 4, map);
+	uint8_t *aux=buf;
+	for(int i=0; i<8; i+=unitlen)
+	{
+		rom_data(aux,unitlen, map);
+		aux+=unitlen;
+	}
 	for(int i=0; i<8; i++) {
 		if(expected[i]==0){
 			printf("Expected is too short!\n");
@@ -87,6 +91,11 @@ void test_map(int map, const char *expected ) {
 
 int main() {
 	int map=0x0201;
+	unitlen=2;
+	test_map(0x01,"00102030");
+	test_map(0x21,"01234567");
+	test_map(0x12,"10325476");
+	unitlen=4;
 	test_map(0x0001,"00001000");
 	test_map(0x4321,"01234567");
 	test_map(0x0012,"10003200");
@@ -96,6 +105,14 @@ int main() {
 	test_map(0x0021,"01002300");
 	test_map(0x0201,"00102030");
 	test_map(0x2001,"00012003");
+	unitlen=8;
+	test_map(0x0000'0001,"00000000");
+	test_map(0x0000'0021,"01000000");
+	test_map(0x0000'4321,"01230000");
+	test_map(0x8765'4321,"01234567");
+	test_map(0x0043'0021,"01002300");
+	test_map(0x4300'0021,"01000023");
+	test_map(0x0403'0201,"00102030");
 	// These will fail because the sequence cannot skip bytes
 	// test_map(0x0034,"32007600");
 	// test_map(0x0043,"23006700");
