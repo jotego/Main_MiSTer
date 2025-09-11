@@ -90,7 +90,6 @@ void test_map(int map, const char *expected ) {
 }
 
 int main() {
-	int map=0x0201;
 	unitlen=2;
 	test_map(0x01,"00102030");
 	test_map(0x10,"00010203");
