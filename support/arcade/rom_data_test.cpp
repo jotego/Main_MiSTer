@@ -29,12 +29,18 @@ int rom_data(const uint8_t *buf, int chunk, int map)
 		return 0; // illegal map
 
 	map_reg = map;
+	bool first = true;
+	int gaps = 0;
 	for (int i = 0; i < unitlen; i++)
 	{
 		if (map_reg & 0xf)
 		{
-			offsets[bytes_in_iter] = idx + (map_reg & 0xf) - 1;
+			offsets[bytes_in_iter] = idx + (map_reg & 0xf) - 1 + gaps;
 			bytes_in_iter++;
+			first = false;
+		} else if( !first )
+		{
+			gaps++;
 		}
 		map_reg >>= 4;
 	}
