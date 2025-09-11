@@ -93,6 +93,7 @@ int main() {
 	int map=0x0201;
 	unitlen=2;
 	test_map(0x01,"00102030");
+	test_map(0x10,"00010203");
 	test_map(0x21,"01234567");
 	test_map(0x12,"10325476");
 	unitlen=4;
