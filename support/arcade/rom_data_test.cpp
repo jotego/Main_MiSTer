@@ -64,7 +64,8 @@ void test_map(int map, const char *expected ) {
 		romdata[i]=0;
 		romlen[i]=0;
 	}
-	rom_data(buf, 8, map);
+	rom_data(buf,   4, map);
+	rom_data(buf+4, 4, map);
 	for(int i=0; i<8; i++) {
 		if(expected[i]==0){
 			printf("Expected is too short!\n");
