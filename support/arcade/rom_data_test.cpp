@@ -35,6 +35,7 @@ int rom_data(const uint8_t *buf, int chunk, int map)
 	{
 		if (map_reg & 0xf)
 		{
+			// makes gaps=0 to test the old code
 			offsets[bytes_in_iter] = idx + (map_reg & 0xf) - 1 + gaps;
 			bytes_in_iter++;
 			first = false;
@@ -108,6 +109,7 @@ int main() {
 	test_map(0x0000'0021,"12000000");
 	test_map(0x0000'4321,"12340000");
 	test_map(0x8765'4321,"12345678");
+	test_map(0x0403'0201,"10203040");
 	// Tests with gaps
 	unitlen=32/8;
 	test_map(0x0201,"10203040");
