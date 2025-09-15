@@ -90,12 +90,12 @@ void test_map(int map, const char *expected ) {
 }
 
 int main() {
-	unitlen=2;
+	unitlen=16/8;
 	test_map(0x01,"10203040");
 	test_map(0x10,"01020304");
 	test_map(0x21,"12345678");
 	test_map(0x12,"21436587");
-	unitlen=4;
+	unitlen=32/8;
 	test_map(0x0001,"10002000");
 	test_map(0x4321,"12345678");
 	test_map(0x0012,"21004300");
@@ -103,13 +103,16 @@ int main() {
 	test_map(0x1200,"00210043");
 	test_map(0x2100,"00120034");
 	test_map(0x0021,"12003400");
-	test_map(0x0201,"10203040");
-	test_map(0x2001,"10023004");
-	unitlen=8;
+	unitlen=64/8;
 	test_map(0x0000'0001,"10000000");
 	test_map(0x0000'0021,"12000000");
 	test_map(0x0000'4321,"12340000");
 	test_map(0x8765'4321,"12345678");
+	// Tests with gaps
+	unitlen=32/8;
+	test_map(0x0201,"10203040");
+	test_map(0x2001,"10023004");
+	unitlen=64/8;
 	test_map(0x0043'0021,"12003400");
 	test_map(0x4300'0021,"12000034");
 	test_map(0x0403'0201,"10203040");
