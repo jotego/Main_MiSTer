@@ -65,7 +65,7 @@ void print_merged(const char *expected) {
 }
 
 void test_map(int map, const char *expected ) {
-	uint8_t buf[8]={0,1,2,3,4,5,6,7};
+	uint8_t buf[8]={1,2,3,4,5,6,7,8};
 	for(int i=0; i<8; i++) {
 		romdata[i]=0;
 		romlen[i]=0;
@@ -91,29 +91,30 @@ void test_map(int map, const char *expected ) {
 
 int main() {
 	unitlen=2;
-	test_map(0x01,"00102030");
-	test_map(0x10,"00010203");
-	test_map(0x21,"01234567");
-	test_map(0x12,"10325476");
+	test_map(0x01,"10203040");
+	test_map(0x10,"01020304");
+	test_map(0x21,"12345678");
+	test_map(0x12,"21436587");
 	unitlen=4;
-	test_map(0x0001,"00001000");
-	test_map(0x4321,"01234567");
-	test_map(0x0012,"10003200");
-	test_map(0x1234,"32107654");
-	test_map(0x1200,"00100032");
-	test_map(0x2100,"00010023");
-	test_map(0x0021,"01002300");
-	test_map(0x0201,"00102030");
-	test_map(0x2001,"00012003");
+	test_map(0x0001,"10002000");
+	test_map(0x4321,"12345678");
+	test_map(0x0012,"21004300");
+	test_map(0x1234,"43218765");
+	test_map(0x1200,"00210043");
+	test_map(0x2100,"00120034");
+	test_map(0x0021,"12003400");
+	test_map(0x0201,"10203040");
+	test_map(0x2001,"10023004");
 	unitlen=8;
-	test_map(0x0000'0001,"00000000");
-	test_map(0x0000'0021,"01000000");
-	test_map(0x0000'4321,"01230000");
-	test_map(0x8765'4321,"01234567");
-	test_map(0x0043'0021,"01002300");
-	test_map(0x4300'0021,"01000023");
-	test_map(0x0403'0201,"00102030");
+	test_map(0x0000'0001,"10000000");
+	test_map(0x0000'0021,"12000000");
+	test_map(0x0000'4321,"12340000");
+	test_map(0x8765'4321,"12345678");
+	test_map(0x0043'0021,"12003400");
+	test_map(0x4300'0021,"12000034");
+	test_map(0x0403'0201,"10203040");
 	// These will fail because the sequence cannot skip bytes
+	// test_map(0x0705'0301,"10305070");
 	// test_map(0x0034,"32007600");
 	// test_map(0x0043,"23006700");
 	// test_map(0x4300,"00230067");
