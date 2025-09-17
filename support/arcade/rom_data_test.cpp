@@ -5,8 +5,11 @@
 using namespace std;
 
 int unitlen=4;
+int error=0;
 uint8_t romdata[8]={0,0,0,0, 0,0,0,0};
 int romlen[8]={0,0,0,0, 0,0,0,0};
+
+// #define OLD
 
 int rom_data(const uint8_t *buf, int chunk, int map)
 {
@@ -41,7 +44,9 @@ int rom_data(const uint8_t *buf, int chunk, int map)
 			first = false;
 		} else if( !first )
 		{
+#ifndef OLD
 			gaps++;
+#endif
 		}
 		map_reg >>= 4;
 	}
@@ -61,12 +66,12 @@ int rom_data(const uint8_t *buf, int chunk, int map)
 
 void print_merged(const char *expected) {
 	for(int i=0; i<8; i++) printf("%X",romdata[i]);
-	printf(" - got\n");
-	printf("%s - expected\n", expected);
+	printf("\t - got\n");
+	printf("\t%s - expected\n", expected);
 }
 
 void test_map(int map, const char *expected ) {
-	uint8_t buf[8]={1,2,3,4,5,6,7,8};
+	uint8_t buf[16]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 	for(int i=0; i<8; i++) {
 		romdata[i]=0;
 		romlen[i]=0;
@@ -85,7 +90,8 @@ void test_map(int map, const char *expected ) {
 		if(romdata[i]!=(uint8_t)(expected[i]-'0')) {
 			printf("map=%04X -> %X != %c at index %d\n",map,romdata[i],expected[i],i);
 			print_merged(expected);
-			exit(1);
+			error=1;
+			return;
 		}
 	}
 }
@@ -98,18 +104,45 @@ int main() {
 	test_map(0x12,"21436587");
 	unitlen=32/8;
 	test_map(0x0001,"10002000");
-	test_map(0x4321,"12345678");
+	test_map(0x0010,"01000200");
+	test_map(0x0100,"00100020");
+	test_map(0x1000,"00010002");
 	test_map(0x0012,"21004300");
-	test_map(0x1234,"43218765");
+	test_map(0x0120,"02100430");
 	test_map(0x1200,"00210043");
-	test_map(0x2100,"00120034");
 	test_map(0x0021,"12003400");
+	test_map(0x0210,"01200340");
+	test_map(0x2100,"00120034");
+	test_map(0x4321,"12345678");
+	test_map(0x1234,"43218765");
 	unitlen=64/8;
 	test_map(0x0000'0001,"10000000");
+	test_map(0x0000'0010,"01000000");
+	// test_map(0x0000'0100,"00100000");
+	test_map(0x0001'0000,"00001000");
+	test_map(0x0010'0000,"00000100");
+	test_map(0x0100'0000,"00000010");
+	// test_map(0x1000'0000,"00000001");
 	test_map(0x0000'0021,"12000000");
+	test_map(0x0000'0210,"01200000");
+	test_map(0x0000'2100,"00120000");
+	test_map(0x0002'1000,"00012000");
+	test_map(0x0021'0000,"00001200");
+	test_map(0x2100'0000,"00000012");
+
+	test_map(0x0000'0012,"21000000");
+	test_map(0x0000'0120,"02100000");
+	test_map(0x0000'1200,"00210000");
+	test_map(0x0001'2000,"00021000");
+	test_map(0x0012'0000,"00002100");
+	test_map(0x1200'0000,"00000021");
+
 	test_map(0x0000'4321,"12340000");
+	test_map(0x0043'2100,"00123400");
+	test_map(0x4321'0000,"00001234");
+	test_map(0x1234'5678,"87654321");
 	test_map(0x8765'4321,"12345678");
-	test_map(0x0403'0201,"10203040");
+#ifndef OLD
 	// Tests with gaps
 	unitlen=32/8;
 	test_map(0x0201,"10203040");
@@ -118,10 +151,11 @@ int main() {
 	test_map(0x0043'0021,"12003400");
 	test_map(0x4300'0021,"12000034");
 	test_map(0x0403'0201,"10203040");
+#endif
 	// These will fail because the sequence cannot skip bytes
 	// test_map(0x0705'0301,"10305070");
 	// test_map(0x0034,"32007600");
 	// test_map(0x0043,"23006700");
 	// test_map(0x4300,"00230067");
-	return 0;
+	return error;
 }
